@@ -1,14 +1,13 @@
 from django.db import models
 from django.contrib import admin
 
-from stats.models import User
 from stats.models.climb_session import ClimbSessionRepository
 from stats.service.queryset import QuerysetService
 
 
 class ClimbUser(models.Model):
     user = models.OneToOneField(
-        User,
+        'User',
         on_delete=models.CASCADE,
         primary_key=True,
     )
@@ -57,3 +56,22 @@ class ClimbUserAdmin(admin.ModelAdmin):
         'time_spent_climbing',
         'number_of_session',
     )
+
+    actions = (
+        'update',
+    )
+
+    @admin.action(description="Update")
+    def update(self, request, queryset):
+        for climb_user in queryset:
+            climb_user.update_stats()
+
+
+class ClimbUserInline(admin.StackedInline):
+    model = ClimbUser
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

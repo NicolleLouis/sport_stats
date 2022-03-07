@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib import admin
 
+from stats.models.climb_user import ClimbUserInline
+
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
@@ -18,4 +20,8 @@ class User(models.Model):
 class UserAdmin(admin.ModelAdmin):
     list_display = (
         'name',
+    )
+
+    inlines = (
+        ClimbUserInline,
     )

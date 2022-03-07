@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib import admin
 
-from stats.models.user import User
 from stats.models.location import Location
 
 
@@ -9,7 +8,7 @@ class ClimbSession(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     climber = models.ForeignKey(
-        User,
+        'User',
         on_delete=models.SET_NULL,
         null=True,
     )
