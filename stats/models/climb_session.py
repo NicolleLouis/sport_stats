@@ -52,3 +52,9 @@ class ClimbSessionAdmin(admin.ModelAdmin):
         'new_blue',
         'all_blue',
     )
+
+
+class ClimbSessionRepository:
+    @staticmethod
+    def get_all_session_by_user(user):
+        return ClimbSession.objects.filter(climber=user)
