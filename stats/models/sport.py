@@ -18,3 +18,9 @@ class SportAdmin(admin.ModelAdmin):
     list_display = (
         'name',
     )
+
+
+class SportRepository:
+    @staticmethod
+    def get_by_name(name):
+        return Sport.objects.get(name=name)
