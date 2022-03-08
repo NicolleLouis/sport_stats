@@ -1,14 +1,11 @@
 from django.db import models
 from django.contrib import admin
 
-from stats.models.climb.climb_user import ClimbUserInline
 
-
-class User(models.Model):
+class Sport(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(
         null=True,
-        blank=True,
         max_length=24
     )
 
@@ -16,12 +13,8 @@ class User(models.Model):
         return self.name
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+@admin.register(Sport)
+class SportAdmin(admin.ModelAdmin):
     list_display = (
         'name',
-    )
-
-    inlines = (
-        ClimbUserInline,
     )

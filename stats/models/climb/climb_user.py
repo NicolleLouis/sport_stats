@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib import admin
 
-from stats.models.climb_session import ClimbSessionRepository
+from stats.models.climb.climb_session import ClimbSessionRepository
 from stats.service.queryset import QuerysetService
 
 

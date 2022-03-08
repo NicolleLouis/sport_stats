@@ -25,4 +25,9 @@ class WeightAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'weight',
+        'created_at',
+    )
+
+    list_filter = (
+        'user',
     )
