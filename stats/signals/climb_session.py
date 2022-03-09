@@ -10,3 +10,8 @@ def create_generic_sport_session(sender, instance, created, **kwargs):
     if not created:
         return
     ClimbSessionService.convert_into_sport_session(instance)
+
+
+@receiver(post_save, sender=ClimbSession)
+def update_climber_stats(sender, instance: ClimbSession, **kwargs):
+    instance.climber.update_stats()

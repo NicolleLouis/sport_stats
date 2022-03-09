@@ -1,14 +1,14 @@
 from django.db import models
 from django.contrib import admin
 
-from stats.models.location import Location
+from stats.models.climb.location import Location
 
 
 class ClimbSession(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = models.DateTimeField(auto_now_add=True)
     climber = models.ForeignKey(
-        'User',
+        'ClimbUser',
         on_delete=models.SET_NULL,
         null=True,
     )

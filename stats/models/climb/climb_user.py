@@ -30,10 +30,10 @@ class ClimbUser(models.Model):
     )
 
     def __str__(self):
-        return f'{self.user.name} climbing profile'
+        return f'{self.user.name}'
 
     def update_stats(self):
-        sessions = ClimbSessionRepository.get_all_session_by_user(self.user)
+        sessions = ClimbSessionRepository.get_all_session_by_user(self)
         self.number_of_session = sessions.count()
         self.number_of_blues = QuerysetService.sum_field_of_queryset(sessions, 'all_blue')
         self.number_of_red = QuerysetService.sum_field_of_queryset(sessions, 'all_red')
