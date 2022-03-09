@@ -6,7 +6,7 @@ from stats.service.climb_session import ClimbSessionService
 
 
 @receiver(post_save, sender=ClimbSession)
-def create_generic_sport_session(sender, instance, created, **kwargs):
+def create_generic_sport_session(sender, instance: ClimbSession, created, **kwargs):
     if not created:
         return
     ClimbSessionService.convert_into_sport_session(instance)

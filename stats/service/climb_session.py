@@ -6,10 +6,10 @@ class ClimbSessionService:
     climb_name = 'Escalade'
 
     @classmethod
-    def convert_into_sport_session(cls, climb_session: ClimbSession):
+    def convert_into_sport_session(cls, climb_session: ClimbSession) -> None:
         climb_sport = SportRepository.get_by_name(cls.climb_name)
         sport_session = SportSession(
-            user=climb_session.climber,
+            user=climb_session.climber.user,
             sport=climb_sport,
             duration=climb_session.duration,
         )
