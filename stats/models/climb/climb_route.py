@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import admin
 
+from stats.constants.route_color import RouteColor
 from stats.service.date import DateService
 
 
@@ -14,6 +15,11 @@ class ClimbRoute(models.Model):
     )
     sector = models.IntegerField(
         default=0,
+    )
+    color = models.CharField(
+        max_length=4,
+        choices=RouteColor.choices,
+        default=RouteColor.BLUE,
     )
     is_active = models.BooleanField(
         default=True,
@@ -29,7 +35,7 @@ class ClimbRoute(models.Model):
             self.created_at,
             DateService.date_format
         )
-        return f'{self.location} sector: {self.sector} - {created_at}'
+        return f'{self.location}: {self.color}, sector {self.sector} - {created_at}'
 
 
 class RouteTagInline(admin.StackedInline):
@@ -41,6 +47,7 @@ class ClimbRouteAdmin(admin.ModelAdmin):
     list_display = (
         'location',
         'sector',
+        'color',
         'is_active',
     )
 
