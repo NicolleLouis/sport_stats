@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib import admin
 
 from stats.models import User
+from stats.service.date import DateService
 
 
 class Weight(models.Model):
@@ -17,7 +18,11 @@ class Weight(models.Model):
     )
 
     def __str__(self):
-        return f'{self.user}: {self.weight} - {self.created_at}'
+        created_at = DateService.convert_to_format(
+            self.created_at,
+            DateService.date_format
+        )
+        return f'{self.user}: {self.weight} - {created_at}'
 
 
 @admin.register(Weight)

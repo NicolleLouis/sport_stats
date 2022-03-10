@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib import admin
 
+from stats.service.date import DateService
+
 
 class SportSession(models.Model):
     id = models.AutoField(primary_key=True)
@@ -21,7 +23,11 @@ class SportSession(models.Model):
     )
 
     def __str__(self):
-        return f'{self.user}: {self.created_at} - {self.sport}'
+        created_at = DateService.convert_to_format(
+            self.created_at,
+            DateService.date_format
+        )
+        return f'{self.user}: {created_at} - {self.sport}'
 
 
 @admin.register(SportSession)

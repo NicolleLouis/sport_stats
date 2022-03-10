@@ -14,6 +14,9 @@ class Location(models.Model):
         null=True,
         blank=True,
     )
+    number_of_sector = models.IntegerField(
+        default=0
+    )
 
     def __str__(self):
         return self.name

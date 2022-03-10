@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib import admin
 
 from stats.models.climb.location import Location
+from stats.service.date import DateService
 
 
 class ClimbSession(models.Model):
@@ -37,9 +38,21 @@ class ClimbSession(models.Model):
         default=0,
         verbose_name='Toutes les rouges'
     )
+    routes = models.ManyToManyField(
+        'ClimbRoute',
+        blank=True,
+    )
 
     def __str__(self):
-        return f'{self.climber}: {self.created_at} - {self.location}'
+        created_at = DateService.convert_to_format(
+            self.created_at,
+            DateService.date_format
+        )
+        return f'{self.climber}: {created_at} - {self.location}'
+
+
+class RouteInline(admin.StackedInline):
+    model = ClimbSession.routes.through
 
 
 @admin.register(ClimbSession)
@@ -50,6 +63,10 @@ class ClimbSessionAdmin(admin.ModelAdmin):
         'location',
         'new_blue',
         'all_blue',
+    )
+
+    inlines = (
+        RouteInline,
     )
 
 
