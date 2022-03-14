@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from stats.constants.route_color import RouteColor
 from stats.service.date import DateService
@@ -24,6 +25,11 @@ class ClimbRoute(models.Model):
     is_active = models.BooleanField(
         default=True,
     )
+    picture = models.ImageField(
+        upload_to='route/',
+        null=True,
+        blank=True,
+    )
     tags = models.ManyToManyField(
         'RouteTag',
         related_name='routes',
@@ -37,6 +43,16 @@ class ClimbRoute(models.Model):
         )
         return f'{self.location}: {self.color}, sector {self.sector} - {created_at}'
 
+    def get_picture(self):
+        if self.picture:
+            return self.picture.url
+        else:
+            return 'No picture'
+
+
+class RouteInline(admin.StackedInline):
+    model = ClimbRoute
+
 
 class RouteTagInline(admin.StackedInline):
     model = ClimbRoute.tags.through
@@ -49,6 +65,7 @@ class ClimbRouteAdmin(admin.ModelAdmin):
         'sector',
         'color',
         'is_active',
+        'picture_image',
     )
 
     inlines = (
@@ -58,6 +75,28 @@ class ClimbRouteAdmin(admin.ModelAdmin):
     actions = (
         'remove',
     )
+
+    list_filter = (
+        'is_active',
+        'location',
+        'color',
+        'sector',
+    )
+
+    readonly_fields = (
+        'picture_image',
+    )
+
+    def picture_image(self, instance):
+        if instance.picture is not None:
+            return mark_safe(
+                '<img src="{url}" width="{width}" height={height} />'.format(
+                    url=instance.picture.url,
+                    width=instance.picture.width,
+                    height=instance.picture.height,
+                )
+            )
+        return None
 
     @admin.action(description="Remove")
     def remove(self, request, queryset):

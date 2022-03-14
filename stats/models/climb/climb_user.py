@@ -75,3 +75,9 @@ class ClimbUserInline(admin.StackedInline):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+
+class ClimbUserRepository:
+    @staticmethod
+    def get_all_climb_users():
+        return ClimbUser.objects.all()

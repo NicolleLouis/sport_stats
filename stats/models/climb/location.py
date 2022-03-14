@@ -43,3 +43,9 @@ class LocationAdmin(admin.ModelAdmin):
                 )
             )
         return None
+
+
+class LocationRepository:
+    @staticmethod
+    def get_all_location():
+        return Location.objects.all()

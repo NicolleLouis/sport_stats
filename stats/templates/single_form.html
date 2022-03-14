@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block stylesheet %}
+    <link href="{% static 'stats/css/single_form.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<form action={{ url }} method="post">
+    {% csrf_token %}
+    <div class="form">
+        {{ form.as_p }}
+    </div>
+    <div class="form">
+        <input class="btn btn-success" type="submit" value="Valider">
+    </div>
+</form>
+{% endblock %}

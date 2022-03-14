@@ -1,5 +1,5 @@
 class DateService:
-    date_format = '%A %B %Y'
+    date_format = '%d %B %Y'
 
     @staticmethod
     def convert_to_format(datetime, date_format):
