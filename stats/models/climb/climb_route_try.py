@@ -55,3 +55,13 @@ class ClimbRouteTryAdmin(admin.ModelAdmin):
     @admin.display(description='Grimpeur')
     def climber(self, instance: ClimbRouteTry):
         return instance.climber
+
+
+class ClimbRouteTryRepository:
+    @staticmethod
+    def get_or_create_by_session_and_route(climb_session, climb_route):
+        climb_route_try, _created = ClimbRouteTry.objects.get_or_create(
+            climb_route=climb_route,
+            climb_session=climb_session
+        )
+        return climb_route_try

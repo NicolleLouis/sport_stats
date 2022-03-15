@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block stylesheet %}
+    <link href="{% static 'stats/css/table.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <table>
+            <th>Sector</th>
+            <th>Picture</th>
+            <th>Essayée</th>
+            <th>Grimpée</th>
+            <th>Flashée</th>
+            {% for form in formset %}
+                {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+                <tr>
+                    <td>{{ form.sector }}</td>
+                    <td><img src={{ form.climb_route_picture_url.value }}></td>
+                    <td class="checkbox">{{ form.is_tried }}</td>
+                    <td class="checkbox">{{ form.is_success }}</td>
+                    <td class="checkbox">{{ form.is_flashed }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div style="margin: 10px">
+            <input class="btn btn-success" type="submit" value="Valider">
+        </div>
+    </form>
+{% endblock %}

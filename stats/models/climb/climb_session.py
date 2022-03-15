@@ -67,3 +67,7 @@ class ClimbSessionRepository:
     @staticmethod
     def get_all_session_by_user(user):
         return ClimbSession.objects.filter(climber=user)
+
+    @staticmethod
+    def get_by_id(climb_session_id: int) -> ClimbSession:
+        return ClimbSession.objects.get(id=climb_session_id)

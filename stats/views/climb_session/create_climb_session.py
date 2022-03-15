@@ -5,7 +5,7 @@ from stats.forms.climb_session.basic_field import ClimbSessionBasicFieldForm
 from stats.models import ClimbSession
 
 
-def get_initial_data_climb_session(request):
+def get_create_data_climb_session(request):
     if request.method == 'POST':
         form = ClimbSessionBasicFieldForm(request.POST)
         if form.is_valid():
@@ -15,12 +15,12 @@ def get_initial_data_climb_session(request):
                 duration=form.cleaned_data['duration'],
             )
             climb_session.save()
-            return HttpResponseRedirect('/admin')
+            return HttpResponseRedirect(f'/sport/update-climb-session/{climb_session.id}')
     else:
         form = ClimbSessionBasicFieldForm()
 
     return render(request, 'single_form.html', {
         'form': form,
-        'url': '/sport/initial-climb-session/',
+        'url': '.',
         'title': 'Info générales de session'
     })

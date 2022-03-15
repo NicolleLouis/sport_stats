@@ -101,3 +101,20 @@ class ClimbRouteAdmin(admin.ModelAdmin):
     @admin.action(description="Remove")
     def remove(self, request, queryset):
         queryset.update(is_active=False)
+
+
+class ClimbRouteRepository:
+    @staticmethod
+    def get_all_active_by_location(location):
+        return ClimbRoute.objects.filter(
+            location=location,
+            is_active=True
+        ).order_by(
+            'sector'
+        )
+
+    @staticmethod
+    def get_by_id(climb_route_id):
+        return ClimbRoute.objects.get(
+            id=climb_route_id,
+        )
