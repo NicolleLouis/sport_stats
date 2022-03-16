@@ -1,4 +1,4 @@
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
 from stats.models import ClimbSession
@@ -15,3 +15,8 @@ def create_generic_sport_session(sender, instance: ClimbSession, created, **kwar
 @receiver(post_save, sender=ClimbSession)
 def update_climber_stats(sender, instance: ClimbSession, **kwargs):
     instance.climber.update_stats()
+
+
+@receiver(pre_save, sender=ClimbSession)
+def update_climb_session_data(sender, instance: ClimbSession, **kwargs):
+    instance.update_data()

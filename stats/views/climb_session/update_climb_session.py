@@ -21,7 +21,7 @@ class UpdateClimbSessionView:
                 for climb_route_form in formset:
                     cls.compute_form(climb_route_form, climb_session)
 
-            return HttpResponseRedirect('/admin')
+            return HttpResponseRedirect('/admin/stats/climbsession/')
         else:
             formset = ClimbRouteFormSet(
                 initial=initial_data
@@ -54,6 +54,10 @@ class UpdateClimbSessionView:
         is_tried = climb_route_form.cleaned_data.get('is_tried')
         is_success = climb_route_form.cleaned_data.get('is_success')
         is_flashed = climb_route_form.cleaned_data.get('is_flashed')
+        if is_flashed:
+            is_success = True
+        if is_success:
+            is_tried = True
         if is_tried:
             climb_route = ClimbRouteRepository.get_by_id(climb_route_id)
             climb_route_try = ClimbRouteTryRepository.get_or_create_by_session_and_route(
@@ -63,3 +67,4 @@ class UpdateClimbSessionView:
             climb_route_try.is_flashed = is_flashed
             climb_route_try.is_success = is_success
             climb_route_try.save()
+        climb_session.save()  # Used to trigger post save computation

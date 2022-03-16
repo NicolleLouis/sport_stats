@@ -9,12 +9,12 @@ class ClimbRouteTry(models.Model):
         'ClimbSession',
         on_delete=models.CASCADE,
         null=True,
+        related_name='routes_tried',
     )
     climb_route = models.ForeignKey(
         'ClimbRoute',
         on_delete=models.CASCADE,
         null=True,
-        related_name='routes_tried',
     )
     is_success = models.BooleanField(
         default=True,
@@ -32,6 +32,9 @@ class ClimbRouteTry(models.Model):
     def __str__(self):
         success_message = 'Grimpée' if self.is_success else 'Essayée'
         return f'{self.climber}: {success_message} - {self.climb_route}'
+
+    class Meta:
+        unique_together = [['climb_session', 'climb_route']]
 
 
 class RouteTryInline(admin.StackedInline):
@@ -65,3 +68,23 @@ class ClimbRouteTryRepository:
             climb_session=climb_session
         )
         return climb_route_try
+
+    @staticmethod
+    def get_all():
+        return ClimbRouteTry.objects.all()
+
+    @staticmethod
+    def filter_queryset_by_color(queryset, color):
+        return queryset.filter(climb_route__color=color)
+
+    @staticmethod
+    def filter_queryset_by_success(queryset, is_success):
+        return queryset.filter(is_success=is_success)
+
+    @staticmethod
+    def filter_queryset_by_user(queryset, climb_user):
+        return queryset.filter(climb_session__climber=climb_user)
+
+    @staticmethod
+    def filter_queryset_by_climb_route(queryset, climb_route):
+        return queryset.filter(climb_route=climb_route)

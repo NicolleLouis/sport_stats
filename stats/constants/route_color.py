@@ -1,7 +1,9 @@
 class RouteColor:
-    BLUE = 'Blue'
-    RED = 'Red'
+    BLUE = 'BLUE'
+    BLUE_HUMAN = 'Blue'
+    RED = 'RED'
+    RED_HUMAN = 'Red'
     choices = (
-        ('BLUE', BLUE),
-        ('RED', RED),
+        (BLUE, BLUE_HUMAN),
+        (RED, RED_HUMAN),
     )

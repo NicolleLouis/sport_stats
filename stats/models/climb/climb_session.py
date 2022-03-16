@@ -1,8 +1,10 @@
 from django.db import models
 from django.contrib import admin
 
+from stats.constants.route_color import RouteColor
 from stats.models.climb.climb_route_try import RouteTryInline
 from stats.models.climb.location import Location
+from stats.service.climb_session import ClimbSessionService
 from stats.service.date import DateService
 
 
@@ -25,19 +27,19 @@ class ClimbSession(models.Model):
     )
     new_blue = models.IntegerField(
         default=0,
-        verbose_name='Nombre de nouvelles bleues'
+        verbose_name='Nombre de nouvelles bleues',
     )
     all_blue = models.IntegerField(
         default=0,
-        verbose_name='Toutes les bleues'
+        verbose_name='Toutes les bleues',
     )
     new_red = models.IntegerField(
         default=0,
-        verbose_name='Nombre de nouvelles rouges'
+        verbose_name='Nombre de nouvelles rouges',
     )
     all_red = models.IntegerField(
         default=0,
-        verbose_name='Toutes les rouges'
+        verbose_name='Toutes les rouges',
     )
 
     def __str__(self):
@@ -46,6 +48,16 @@ class ClimbSession(models.Model):
             DateService.date_format
         )
         return f'{self.climber}: {created_at} - {self.location}'
+
+    def update_data(self):
+        self.all_blue, self.new_blue = ClimbSessionService.compute_data_by_color(
+            color=RouteColor.BLUE,
+            climb_session=self
+        )
+        self.all_red, self.new_red = ClimbSessionService.compute_data_by_color(
+            color=RouteColor.RED,
+            climb_session=self
+        )
 
 
 @admin.register(ClimbSession)
@@ -60,6 +72,13 @@ class ClimbSessionAdmin(admin.ModelAdmin):
 
     inlines = (
         RouteTryInline,
+    )
+
+    readonly_fields = (
+        'all_blue',
+        'new_blue',
+        'all_red',
+        'new_red',
     )
 
 

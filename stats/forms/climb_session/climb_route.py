@@ -22,7 +22,7 @@ class ClimbSessionClimbRouteForm(forms.Form):
         required=False,
     )
     is_success = forms.BooleanField(
-        initial=True,
+        initial=False,
         label='Réussie',
         required=False,
     )
