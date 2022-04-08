@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import admin
 
+from stats.constants.route_color import RouteColor
 from stats.models.climb.climb_route_try import ClimbRouteTryRepository
 from stats.models.climb.climb_session import ClimbSessionRepository
 from stats.service.queryset import QuerysetService
@@ -36,6 +37,22 @@ class ClimbUser(models.Model):
     def update_stats(self) -> None:
         sessions = ClimbSessionRepository.get_all_session_by_user(self)
         self.number_of_session = sessions.count()
+        try:
+            self.number_of_blues = sum(
+                map(
+                    lambda session: session.get_related_stat_by_color(RouteColor.BLUE).all_routes,
+                    sessions
+                )
+            )
+            self.number_of_red = sum(
+                map(
+                    lambda session: session.get_related_stat_by_color(RouteColor.RED).all_routes,
+                    sessions
+                )
+            )
+        except IndexError:  # ToDo: custom error here
+            pass
+
         self.time_spent_climbing = QuerysetService.sum_field_of_queryset(sessions, 'duration')
         self.save()
 

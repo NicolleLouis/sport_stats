@@ -10,7 +10,6 @@ from django.db import models
 from django.contrib import admin
 
 from stats.constants.route_color import RouteColor
-from stats.models.climb.climb_route_try import RouteTryInline
 from stats.models.climb.location import Location
 from stats.service.date import DateService
 
@@ -66,7 +65,8 @@ class ClimbSessionAdmin(admin.ModelAdmin):
         'climber',
         'duration',
         'location',
-        # 'get_new_blue',
+        'get_ratio_blue_session',
+        'get_ratio_blue_location',
     )
 
     list_filter = (
@@ -76,13 +76,24 @@ class ClimbSessionAdmin(admin.ModelAdmin):
 
     inlines = (
         ClimbSessionStatColorInline,
-        RouteTryInline,
     )
 
-    # def get_new_blue(self, instance):
-    #     blue_stats = instance.get_related_stat_by_color(RouteColor.BLUE)
-    #     return blue_stats.new_routes
-    # get_new_blue.short_description = 'Nouvelles bleues'
+    def get_ratio_blue_session(self, instance):
+        try:
+            blue_stats = instance.get_related_stat_by_color(RouteColor.BLUE)
+            return blue_stats.ratio_route_session
+        except IndexError:
+            return 0
+
+    get_ratio_blue_session.short_description = 'Ratio bleues validées dans la séance'
+
+    def get_ratio_blue_location(self, instance):
+        try:
+            blue_stats = instance.get_related_stat_by_color(RouteColor.BLUE)
+            return blue_stats.ratio_route_location
+        except IndexError:
+            return 0
+    get_ratio_blue_location.short_description = 'Ratio bleues validées dans la salle'
 
 
 class ClimbSessionRepository:

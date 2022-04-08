@@ -21,6 +21,7 @@ class UpdateClimbSessionView:
                 for climb_route_form in formset:
                     cls.compute_form(climb_route_form, climb_session)
                 climb_session.update_data()
+                climb_session.climber.update_stats()
 
             return HttpResponseRedirect('/admin/stats/climbsession/')
         else:
