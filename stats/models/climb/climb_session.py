@@ -1,10 +1,17 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+from stats.models.climb.climb_session_stat_color import ClimbSessionStatColorInline
+
+if TYPE_CHECKING:
+    from stats.models import ClimbSessionStatColor
+
 from django.db import models
 from django.contrib import admin
 
 from stats.constants.route_color import RouteColor
 from stats.models.climb.climb_route_try import RouteTryInline
 from stats.models.climb.location import Location
-from stats.service.climb_session import ClimbSessionService
 from stats.service.date import DateService
 
 
@@ -25,22 +32,6 @@ class ClimbSession(models.Model):
         on_delete=models.SET_NULL,
         null=True,
     )
-    new_blue = models.IntegerField(
-        default=0,
-        verbose_name='Nombre de nouvelles bleues',
-    )
-    all_blue = models.IntegerField(
-        default=0,
-        verbose_name='Toutes les bleues',
-    )
-    new_red = models.IntegerField(
-        default=0,
-        verbose_name='Nombre de nouvelles rouges',
-    )
-    all_red = models.IntegerField(
-        default=0,
-        verbose_name='Toutes les rouges',
-    )
 
     def __str__(self):
         created_at = DateService.convert_to_format(
@@ -49,15 +40,24 @@ class ClimbSession(models.Model):
         )
         return f'{self.climber}: {created_at} - {self.location}'
 
+    def get_related_stat_by_color(self, color: str) -> ClimbSessionStatColor:
+        from stats.models.climb.climb_session_stat_color import ClimbSessionStatColorRepository
+
+        all_stats = ClimbSessionStatColorRepository.get_all()
+        session_stats = ClimbSessionStatColorRepository.filter_by_session(
+            all_stats, self
+        )
+        color_session_stat = ClimbSessionStatColorRepository.filter_by_color(
+            session_stats, color
+        )
+        return color_session_stat[0]
+
     def update_data(self):
-        self.all_blue, self.new_blue = ClimbSessionService.compute_data_by_color(
-            color=RouteColor.BLUE,
-            climb_session=self
-        )
-        self.all_red, self.new_red = ClimbSessionService.compute_data_by_color(
-            color=RouteColor.RED,
-            climb_session=self
-        )
+        from stats.service.climb_session import ClimbSessionService
+
+        session_stat_color_instances = ClimbSessionService.generate_session_stat_color_instance(self)
+        for session_stat_by_color in session_stat_color_instances:
+            session_stat_by_color.update_data()
 
 
 @admin.register(ClimbSession)
@@ -66,23 +66,30 @@ class ClimbSessionAdmin(admin.ModelAdmin):
         'climber',
         'duration',
         'location',
-        'new_blue',
-        'all_blue',
+        # 'get_new_blue',
+    )
+
+    list_filter = (
+        'climber',
+        'location',
     )
 
     inlines = (
+        ClimbSessionStatColorInline,
         RouteTryInline,
     )
 
-    readonly_fields = (
-        'all_blue',
-        'new_blue',
-        'all_red',
-        'new_red',
-    )
+    # def get_new_blue(self, instance):
+    #     blue_stats = instance.get_related_stat_by_color(RouteColor.BLUE)
+    #     return blue_stats.new_routes
+    # get_new_blue.short_description = 'Nouvelles bleues'
 
 
 class ClimbSessionRepository:
+    @staticmethod
+    def get_all_session():
+        return ClimbSession.objects.all()
+
     @staticmethod
     def get_all_session_by_user(user):
         return ClimbSession.objects.filter(climber=user)

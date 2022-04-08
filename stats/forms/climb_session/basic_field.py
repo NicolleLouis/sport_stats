@@ -6,12 +6,12 @@ from stats.models.climb.location import LocationRepository
 
 class ClimbSessionBasicFieldForm(forms.Form):
     climber = forms.ModelChoiceField(
-        queryset=ClimbUserRepository.get_all_climb_users(),
+        queryset=ClimbUserRepository.get_all(),
         empty_label="(No user)",
         label='Grimpeur',
     )
     location = forms.ModelChoiceField(
-        queryset=LocationRepository.get_all_location(),
+        queryset=LocationRepository.get_all(),
         empty_label="(No location)",
         label='Salle',
     )

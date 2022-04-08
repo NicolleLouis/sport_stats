@@ -1,5 +1,9 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+
+from stats.constants.route_color import RouteColor
+from stats.models import ClimbSessionStatColor
+
 if TYPE_CHECKING:
     from stats.models import ClimbSession
 
@@ -21,22 +25,19 @@ class ClimbSessionService:
         sport_session.save()
 
     @staticmethod
-    def compute_data_by_color(climb_session: ClimbSession, color) -> (int, int):
-        from stats.models.climb.climb_route_try import ClimbRouteTryRepository
+    def generate_session_stat_color_instance(climb_session: ClimbSession):
+        colors = [
+            RouteColor.RED,
+            RouteColor.BLUE,
+        ]
 
-        climb_user = climb_session.climber
-        routes = climb_session.routes_tried.all()
-        blues = ClimbRouteTryRepository.filter_queryset_by_color(routes, color)
-        routes_succeeded = ClimbRouteTryRepository.filter_queryset_by_success(blues, True)
-        all_route = routes_succeeded.count()
-        new_route = sum(
-            list(
-                map(
-                    lambda blue_succeeded: climb_user.is_first_time_climb_route(
-                        blue_succeeded.climb_route
-                    ),
-                    routes_succeeded
-                )
+        session_stat_color_instances = []
+
+        for color in colors:
+            climb_session_stat_color = ClimbSessionStatColor(
+                color=color,
+                climb_session=climb_session,
             )
-        )
-        return all_route, new_route
+            session_stat_color_instances.append(climb_session_stat_color)
+
+        return session_stat_color_instances

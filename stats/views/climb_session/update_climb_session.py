@@ -20,6 +20,7 @@ class UpdateClimbSessionView:
             if formset.is_valid():
                 for climb_route_form in formset:
                     cls.compute_form(climb_route_form, climb_session)
+                climb_session.update_data()
 
             return HttpResponseRedirect('/admin/stats/climbsession/')
         else:
@@ -36,7 +37,10 @@ class UpdateClimbSessionView:
     @staticmethod
     def generate_initial_data(climb_session):
         location = climb_session.location
-        climb_routes = ClimbRouteRepository.get_all_active_by_location(location)
+        all_routes = ClimbRouteRepository.get_all()
+        route_by_location = ClimbRouteRepository.filter_queryset_by_location(all_routes, location)
+        active_routes = ClimbRouteRepository.filter_queryset_by_is_active(route_by_location, True)
+        sorted_routes = ClimbRouteRepository.sort_queryset_by_sector(active_routes)
         return list(
             map(
                 lambda climb_route: {
@@ -44,7 +48,7 @@ class UpdateClimbSessionView:
                     'sector': climb_route.sector,
                     'climb_route_picture_url': climb_route.picture.url,
                 },
-                climb_routes
+                sorted_routes
             )
         )
 
@@ -67,4 +71,3 @@ class UpdateClimbSessionView:
             climb_route_try.is_flashed = is_flashed
             climb_route_try.is_success = is_success
             climb_route_try.save()
-        climb_session.save()  # Used to trigger post save computation

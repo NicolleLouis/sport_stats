@@ -1,14 +1,11 @@
 from django.core.management.base import BaseCommand
 
-from stats.models import ClimbSession, ClimbUser, ClimbRoute
+from stats.models.climb.climb_session_stat_color import ClimbSessionStatColorRepository
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        climb_session = ClimbSession.objects.all()[5]
-        cecile = ClimbUser.objects.all()[1]
-        print(climb_session)
-        routes = ClimbRoute.objects.all()
-        for route in routes:
-            print(route)
-            print(cecile.has_done_climb_route(route))
+        all_climb_session_stat = ClimbSessionStatColorRepository.get_all()
+        for stat in all_climb_session_stat:
+            if stat.climb_session is None:
+                stat.delete()

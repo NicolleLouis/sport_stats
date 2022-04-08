@@ -105,16 +105,27 @@ class ClimbRouteAdmin(admin.ModelAdmin):
 
 class ClimbRouteRepository:
     @staticmethod
-    def get_all_active_by_location(location):
-        return ClimbRoute.objects.filter(
-            location=location,
-            is_active=True
-        ).order_by(
-            'sector'
-        )
+    def get_all():
+        return ClimbRoute.objects.all()
+
+    @staticmethod
+    def filter_queryset_by_location(queryset, location):
+        return queryset.filter(location=location)
+
+    @staticmethod
+    def filter_queryset_by_is_active(queryset, is_active):
+        return queryset.filter(is_active=is_active)
+
+    @staticmethod
+    def filter_queryset_by_color(queryset, color):
+        return queryset.filter(color=color)
 
     @staticmethod
     def get_by_id(climb_route_id):
         return ClimbRoute.objects.get(
             id=climb_route_id,
         )
+
+    @staticmethod
+    def sort_queryset_by_sector(queryset):
+        return queryset.order_by('sector')

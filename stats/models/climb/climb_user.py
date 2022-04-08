@@ -36,8 +36,6 @@ class ClimbUser(models.Model):
     def update_stats(self) -> None:
         sessions = ClimbSessionRepository.get_all_session_by_user(self)
         self.number_of_session = sessions.count()
-        self.number_of_blues = QuerysetService.sum_field_of_queryset(sessions, 'all_blue')
-        self.number_of_red = QuerysetService.sum_field_of_queryset(sessions, 'all_red')
         self.time_spent_climbing = QuerysetService.sum_field_of_queryset(sessions, 'duration')
         self.save()
 
@@ -102,5 +100,5 @@ class ClimbUserAdmin(admin.ModelAdmin):
 
 class ClimbUserRepository:
     @staticmethod
-    def get_all_climb_users():
+    def get_all():
         return ClimbUser.objects.all()
