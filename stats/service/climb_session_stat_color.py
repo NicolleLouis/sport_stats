@@ -31,9 +31,9 @@ class ClimbSessionStatColorService:
         color = climb_session_stat_color.color
         climb_user = climb_session.climber
         routes = climb_session.routes_tried.all()
-        climb_session_stat_color.routes_tried = routes.count()
-        blues = ClimbRouteTryRepository.filter_queryset_by_color(routes, color)
-        routes_succeeded = ClimbRouteTryRepository.filter_queryset_by_success(blues, True)
+        colored_routes = ClimbRouteTryRepository.filter_queryset_by_color(routes, color)
+        climb_session_stat_color.routes_tried = colored_routes.count()
+        routes_succeeded = ClimbRouteTryRepository.filter_queryset_by_success(colored_routes, True)
         climb_session_stat_color.all_routes_succeeded = routes_succeeded.count()
         climb_session_stat_color.new_routes_succeeded = sum(
             list(
@@ -46,7 +46,7 @@ class ClimbSessionStatColorService:
             )
         )
         routes_flashed = ClimbRouteTryRepository.filter_queryset_by_flashed(
-            blues,
+            colored_routes,
             True
         )
         climb_session_stat_color.routes_flashed = routes_flashed.count()

@@ -3,7 +3,7 @@ from django.db import models
 from stats.constants.route_color import RouteColor
 from django.contrib import admin
 
-from stats.models.climb.climb_session import ClimbSessionRepository
+from stats.service.climb_user_stat_color import ClimbUserStatColorService
 
 
 class ClimbUserStatColor(models.Model):
@@ -27,33 +27,14 @@ class ClimbUserStatColor(models.Model):
     )
     number_of_routes_tried = models.IntegerField(
         default=0,
-        verbose_name='Nombre total de pistes ratées',
+        verbose_name='Nombre total de pistes essayées',
     )
 
     def __str__(self):
         return f'{self.climb_user.user.name} stats for {self.color}'
 
     def update_stats(self) -> None:
-        sessions = ClimbSessionRepository.get_all_session_by_user(self.climb_user)
-        sessions_stats = list(
-            map(
-                lambda session: session.get_related_stat_by_color(self.color),
-                sessions
-            )
-        )
-        not_empty_sessions_stats = list(
-            filter(
-                None,
-                sessions_stats
-            )
-        )
-        self.number_of_routes_succeeded = sum(
-            map(
-                lambda session_stat: session_stat.all_routes_succeeded,
-                not_empty_sessions_stats
-            )
-        )
-        self.save()
+        ClimbUserStatColorService.update_raw_values(self)
 
 
 @admin.register(ClimbUserStatColor)

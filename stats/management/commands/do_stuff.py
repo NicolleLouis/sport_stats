@@ -7,5 +7,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         all_climb_session_stat = ClimbSessionStatColorRepository.get_all()
         for stat in all_climb_session_stat:
-            if stat.climb_session is None:
-                stat.delete()
+            print(stat)
