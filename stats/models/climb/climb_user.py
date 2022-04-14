@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib import admin
 
-from stats.constants.route_color import RouteColor
 from stats.models.climb.climb_route_try import ClimbRouteTryRepository
 from stats.models.climb.climb_session import ClimbSessionRepository
+from stats.models.climb.climb_user_stat_color import ClimbUserStatColorInline
 from stats.service.queryset import QuerysetService
 
 
@@ -18,14 +18,6 @@ class ClimbUser(models.Model):
         default=0,
         verbose_name='Nombre de séance',
     )
-    number_of_blues = models.IntegerField(
-        default=0,
-        verbose_name='Nombre total de bleue',
-    )
-    number_of_red = models.IntegerField(
-        default=0,
-        verbose_name='Nombre total de rouge',
-    )
     time_spent_climbing = models.IntegerField(
         default=0,
         verbose_name='Temps passé à grimper (en min)',
@@ -37,24 +29,11 @@ class ClimbUser(models.Model):
     def update_stats(self) -> None:
         sessions = ClimbSessionRepository.get_all_session_by_user(self)
         self.number_of_session = sessions.count()
-        try:
-            self.number_of_blues = sum(
-                map(
-                    lambda session: session.get_related_stat_by_color(RouteColor.BLUE).all_routes,
-                    sessions
-                )
-            )
-            self.number_of_red = sum(
-                map(
-                    lambda session: session.get_related_stat_by_color(RouteColor.RED).all_routes,
-                    sessions
-                )
-            )
-        except IndexError:  # ToDo: custom error here
-            pass
-
         self.time_spent_climbing = QuerysetService.sum_field_of_queryset(sessions, 'duration')
         self.save()
+
+        for color_stat in self.color_stats.all():
+            color_stat.update_stats()
 
     def count_success_climb_route(self, climb_route):
         climb_route_tries = ClimbRouteTryRepository.get_all()
@@ -93,20 +72,21 @@ class ClimbUserInline(admin.StackedInline):
 class ClimbUserAdmin(admin.ModelAdmin):
     list_display = (
         'user',
-        'number_of_blues',
         'time_spent_climbing',
         'number_of_session',
     )
 
     readonly_fields = (
-        'number_of_blues',
-        'number_of_red',
         'time_spent_climbing',
         'number_of_session',
     )
 
     actions = (
         'update',
+    )
+
+    inlines = (
+        ClimbUserStatColorInline,
     )
 
     @admin.action(description="Update")

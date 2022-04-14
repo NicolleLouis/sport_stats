@@ -39,7 +39,7 @@ class ClimbSession(models.Model):
         )
         return f'{self.climber}: {created_at} - {self.location}'
 
-    def get_related_stat_by_color(self, color: str) -> ClimbSessionStatColor:
+    def get_related_stat_by_color(self, color: str) -> ClimbSessionStatColor | None:
         from stats.models.climb.climb_session_stat_color import ClimbSessionStatColorRepository
 
         all_stats = ClimbSessionStatColorRepository.get_all()
@@ -49,6 +49,8 @@ class ClimbSession(models.Model):
         color_session_stat = ClimbSessionStatColorRepository.filter_by_color(
             session_stats, color
         )
+        if color_session_stat.count() == 0:
+            return None
         return color_session_stat[0]
 
     def update_data(self):
@@ -79,20 +81,18 @@ class ClimbSessionAdmin(admin.ModelAdmin):
     )
 
     def get_ratio_blue_session(self, instance):
-        try:
-            blue_stats = instance.get_related_stat_by_color(RouteColor.BLUE)
-            return blue_stats.ratio_route_session
-        except IndexError:
+        blue_stats = instance.get_related_stat_by_color(RouteColor.BLUE)
+        if blue_stats is None:
             return 0
+        return blue_stats.ratio_route_session
 
     get_ratio_blue_session.short_description = 'Ratio bleues validées dans la séance'
 
     def get_ratio_blue_location(self, instance):
-        try:
-            blue_stats = instance.get_related_stat_by_color(RouteColor.BLUE)
-            return blue_stats.ratio_route_location
-        except IndexError:
+        blue_stats = instance.get_related_stat_by_color(RouteColor.BLUE)
+        if blue_stats is None:
             return 0
+        return blue_stats.ratio_route_location
     get_ratio_blue_location.short_description = 'Ratio bleues validées dans la salle'
 
 

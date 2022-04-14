@@ -18,11 +18,19 @@ class ClimbSessionStatColor(models.Model):
         choices=RouteColor.choices,
         default=RouteColor.BLUE,
     )
-    new_routes = models.IntegerField(
+    routes_tried = models.IntegerField(
+        default=0,
+        verbose_name='Nombre de pistes essayées',
+    )
+    routes_flashed = models.IntegerField(
+        default=0,
+        verbose_name='Nombre de pistes flashées',
+    )
+    new_routes_succeeded = models.IntegerField(
         default=0,
         verbose_name='Nombre de nouvelles pistes réussies',
     )
-    all_routes = models.IntegerField(
+    all_routes_succeeded = models.IntegerField(
         default=0,
         verbose_name='Toutes les pistes réussies',
     )
@@ -49,8 +57,10 @@ class ClimbSessionStatColorAdmin(admin.ModelAdmin):
     list_display = (
         'climb_session',
         'color',
-        'new_routes',
-        'all_routes',
+        'new_routes_succeeded',
+        'all_routes_succeeded',
+        'routes_flashed',
+        'routes_tried',
         'ratio_route_session',
         'ratio_route_location',
     )
@@ -62,8 +72,10 @@ class ClimbSessionStatColorAdmin(admin.ModelAdmin):
     readonly_fields = (
         'climb_session',
         'color',
-        'new_routes',
-        'all_routes',
+        'new_routes_succeeded',
+        'all_routes_succeeded',
+        'routes_flashed',
+        'routes_tried',
         'ratio_route_session',
         'ratio_route_location',
     )

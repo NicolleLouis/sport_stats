@@ -31,10 +31,11 @@ class ClimbSessionStatColorService:
         color = climb_session_stat_color.color
         climb_user = climb_session.climber
         routes = climb_session.routes_tried.all()
+        climb_session_stat_color.routes_tried = routes.count()
         blues = ClimbRouteTryRepository.filter_queryset_by_color(routes, color)
         routes_succeeded = ClimbRouteTryRepository.filter_queryset_by_success(blues, True)
-        climb_session_stat_color.all_routes = routes_succeeded.count()
-        climb_session_stat_color.new_routes = sum(
+        climb_session_stat_color.all_routes_succeeded = routes_succeeded.count()
+        climb_session_stat_color.new_routes_succeeded = sum(
             list(
                 map(
                     lambda route_succeeded: climb_user.is_first_time_climb_route(
@@ -44,6 +45,11 @@ class ClimbSessionStatColorService:
                 )
             )
         )
+        routes_flashed = ClimbRouteTryRepository.filter_queryset_by_flashed(
+            blues,
+            True
+        )
+        climb_session_stat_color.routes_flashed = routes_flashed.count()
         climb_session_stat_color.save()
 
     @staticmethod
@@ -54,7 +60,7 @@ class ClimbSessionStatColorService:
         climb_session = climb_session_stat_color.climb_session
         location = climb_session.location
         total_route_number = location.number_of_active_route_by_color(color)
-        route_climbed = climb_session_stat_color.all_routes
+        route_climbed = climb_session_stat_color.all_routes_succeeded
         if total_route_number == 0:
             ratio = 0
         else:

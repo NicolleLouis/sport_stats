@@ -1,4 +1,5 @@
 from .climb_user import ClimbUser
+from .climb_user_stat_color import ClimbUserStatColor
 from .climb_session import ClimbSession
 from .location import Location
 from .route_tag import RouteTag

@@ -82,6 +82,10 @@ class ClimbRouteTryRepository:
         return queryset.filter(is_success=is_success)
 
     @staticmethod
+    def filter_queryset_by_flashed(queryset, is_flashed):
+        return queryset.filter(is_flashed=is_flashed)
+
+    @staticmethod
     def filter_queryset_by_user(queryset, climb_user):
         return queryset.filter(climb_session__climber=climb_user)
 
