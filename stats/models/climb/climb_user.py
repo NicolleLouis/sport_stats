@@ -12,11 +12,11 @@ class ClimbUser(models.Model):
         'User',
         on_delete=models.CASCADE,
         primary_key=True,
+        related_name='climb_profile',
     )
     number_of_session = models.IntegerField(
         default=0,
         verbose_name='Nombre de séance',
-
     )
     number_of_blues = models.IntegerField(
         default=0,

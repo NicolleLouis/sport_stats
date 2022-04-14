@@ -9,7 +9,7 @@ def get_choose_climber(request):
         form = ClimberForm(request.POST)
         if form.is_valid():
             climber = form.cleaned_data['climber']
-            return HttpResponseRedirect(f'/sport/climber-stats/{climber.user.id}')
+            return HttpResponseRedirect(f'/sport/home-climber-stats/{climber.user.id}')
     else:
         form = ClimberForm()
 

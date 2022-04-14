@@ -25,3 +25,9 @@ class UserAdmin(admin.ModelAdmin):
     inlines = (
         ClimbUserInline,
     )
+
+
+class UserRepository:
+    @staticmethod
+    def get_by_id(user_id):
+        return User.objects.get(id=user_id)
