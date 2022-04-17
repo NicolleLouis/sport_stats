@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block stylesheet %}
+<link href="{% static 'stats/css/color.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    {% for color_stat in color_stats %}
+        <p>
+            <h2 class='{{ color_stat.color }}'>{{ color_stat.color }}</h2>
+            <ul>
+                <li>Nombre total de pistes essayées: {{ color_stat.number_of_routes_tried }}</li>
+                <li>Nombre total de pistes réussies: {{ color_stat.number_of_routes_succeeded }}</li>
+                <li>Nombre total de pistes flashées: {{ color_stat.number_of_routes_flashed }}</li>
+            </ul>
+        </p>
+    {% endfor %}
+{% endblock %}

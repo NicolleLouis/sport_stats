@@ -1,4 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <h2>Summary</h2>
+    <ul>
+        <li>Nombre total de pistes essayées: {{ aggregated_values.number_of_routes_tried }}</li>
+        <li>Nombre total de pistes réussies: {{ aggregated_values.number_of_routes_succeeded }}</li>
+        <li>Nombre total de pistes flashées: {{ aggregated_values.number_of_routes_flashed }}</li>
+    </ul>
+    <h2>Details</h2>
+    <ul>
+        <li><a href="/sport/color-detail/{{ climber_id }}">Raw Values by Color</a></li>
+    </ul>
 {% endblock %}
