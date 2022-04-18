@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block script %}
+     <script>
+    window.onload = function() {
+      var ctx = document.getElementById('chart').getContext('2d');
+      window.myPie = new Chart(ctx, {{ chart|safe }});
+    };
+
+  </script>
+{% endblock %}
+
+{% block content %}
+    <div id="container" style="width: 60%;">
+        <canvas id="chart"></canvas>
+    </div>
+{% endblock %}
