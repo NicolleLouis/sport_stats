@@ -21,6 +21,7 @@ class ClimbSession(models.Model):
         'ClimbUser',
         on_delete=models.SET_NULL,
         null=True,
+        related_name="sessions",
     )
     duration = models.IntegerField(
         default=60,

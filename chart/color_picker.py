@@ -1,6 +1,6 @@
 import random
 
-from constants.colors import colors
+from chart.constants.colors import colors
 
 
 class ColorPicker:

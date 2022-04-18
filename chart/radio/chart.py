@@ -1,5 +1,6 @@
 import json
 
+from chart.color_picker import ColorPicker
 from chart.radio.dataset import RadioDataset
 
 
@@ -20,7 +21,8 @@ class RadioChart:
             dataset = RadioDataset(
                 raw_data=raw_dataset,
                 dataset_label=dataset_label,
-                labels_order=self.labels
+                labels_order=self.labels,
+                color=ColorPicker.get_color(len(dataset_list))
             )
             dataset_list.append(
                 dataset.export()
@@ -28,17 +30,18 @@ class RadioChart:
         return dataset_list
 
     def export_chart(self):
-        print({
-            "type": 'radar',
-            "data": {
-                "labels": self.labels,
-                "datasets": self.generate_dataset()
-            }
-        })
         return json.dumps({
             "type": 'radar',
             "data": {
                 "labels": self.labels,
                 "datasets": self.generate_dataset()
+            },
+            "options": {
+                "scales": {
+                    "r": {
+                        "min": 0,
+                        "max": 1,
+                    }
+                }
             }
         })
