@@ -7,6 +7,8 @@ from stats.views.stats.choose_climber import get_choose_climber
 from stats.views.stats.color_detail import ColorDetailClimberStatsView
 from stats.views.stats.home_climber_stats import HomeClimberStatsView
 from stats.views.stats.tag_radar import TagRadarStatsView
+from stats.views.stats.tag_success_repartition import TagSuccessRepartitionStatsView
+from stats.views.stats.tag_tries_repartition import TagTriesRepartitionStatsView
 
 urlpatterns = [
     path('create-climb-session/', get_create_data_climb_session),
@@ -15,5 +17,7 @@ urlpatterns = [
     path('choose-climber/', get_choose_climber),
     path('color-detail/<int:climber_id>', ColorDetailClimberStatsView.get_color_details),
     path('radar-tag/<int:climber_id>', TagRadarStatsView.get_tag_radar),
+    path('radio-tag-tries/<int:climber_id>', TagTriesRepartitionStatsView.get),
+    path('radio-tag-success/<int:climber_id>', TagSuccessRepartitionStatsView.get),
     path('', home),
 ]

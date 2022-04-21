@@ -35,7 +35,7 @@ class TagTriesAggregation:
         for tag in tags:
             self.add_try_for_tag(tag, route_try)
 
-    def export_data(self):
+    def export_ratio_data(self):
         ratio_succeeded = {}
         ratio_flashed = {}
         for tag in self.aggregated_data:
@@ -48,15 +48,28 @@ class TagTriesAggregation:
             "Ratio Flashé": ratio_flashed,
         }
 
+    def export_tries_data(self):
+        tries_number = {}
+        for tag in self.aggregated_data:
+            tag_data = self.aggregated_data[tag]
+            tries_number[tag.tag] = tag_data.tried
+        return tries_number
+
+    def export_success_data(self):
+        tries_number = {}
+        for tag in self.aggregated_data:
+            tag_data = self.aggregated_data[tag]
+            tries_number[tag.tag] = tag_data.succeeded
+        return tries_number
+
 
 class TagRadarService:
     @staticmethod
-    def compute_tag_ratio(climber):
+    def aggregate_tag_data(climber):
         aggregation = TagTriesAggregation()
         route_tries = []
         for session in climber.sessions.all():
             route_tries.extend(session.routes_tried.all())
         for route_try in route_tries:
             aggregation.add_try(route_try)
-        return aggregation.export_data()
-
+        return aggregation

@@ -1,6 +1,6 @@
 import json
 
-from chart.color_picker import ColorPicker
+from chart.color.color_picker import ColorPicker
 from chart.radio.dataset import RadioDataset
 
 
